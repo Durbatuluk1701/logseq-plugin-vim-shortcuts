@@ -1,4 +1,4 @@
-import { clearCurrentPageBlocksHighlight, hideMainUI } from "@/common/funcs";
+import { clearCurrentPageBlocksHighlight, hideMainUI, escapeHtml } from "@/common/funcs";
 import { BlockEntity, BlockUUID } from "@logseq/libs/dist/LSPlugin";
 import { defineStore } from "pinia";
 
@@ -148,14 +148,6 @@ function processBlockSegments(tab, input, highlightOffset?: number) {
   return tab;
 }
 
-function escapeHtml(unsafe: string) {
-  return unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
 function addHighlight(word: string, input: string, highlightOffset?: number) {
   // If highlightOffset is specified, only highlight that specific match
