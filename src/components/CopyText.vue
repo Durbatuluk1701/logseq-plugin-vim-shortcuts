@@ -21,7 +21,7 @@ const handleClick = () => {
     draggable
   >
     <div class="flex flex-row justify-between gap-4">
-      <div class="font-bold" v-html="copyTextStore.content"></div>
+      <div class="font-bold">{{ copyTextStore.content }}</div>
       <div @click="handleClick" class="cursor-pointer">
         <svg
           xmlns="http://www.w3.org/2000/svg"

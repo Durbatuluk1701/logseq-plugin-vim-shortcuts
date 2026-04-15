@@ -138,7 +138,9 @@ const renderMarkdown = (text: string): string => {
   // Escape HTML to prevent XSS
   html = html.replace(/&/g, '&amp;')
              .replace(/</g, '&lt;')
-             .replace(/>/g, '&gt;');
+             .replace(/>/g, '&gt;')
+             .replace(/"/g, '&quot;')
+             .replace(/'/g, '&#39;');
 
   // Bold: **text** or __text__
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
@@ -158,10 +160,22 @@ const renderMarkdown = (text: string): string => {
   html = html.replace(/==(.+?)==/g, '<mark class="highlight">$1</mark>');
 
   // Images: ![alt](url) - must be processed before links
-  html = html.replace(/!\[([^\]]*)\]\((.+?)\)/g, '<img src="$2" alt="$1" class="preview-image" />');
+  html = html.replace(/!\[([^\]]*)\]\((.+?)\)/g, (match, alt, url) => {
+    // Basic protection against javascript: urls
+    if (url.trim().toLowerCase().startsWith('javascript:')) {
+      return match;
+    }
+    return `<img src="${url}" alt="${alt}" class="preview-image" />`;
+  });
 
   // Links: [text](url)
-  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="link" target="_blank">$1</a>');
+  html = html.replace(/\[(.+?)\]\((.+?)\)/g, (match, text, url) => {
+    // Basic protection against javascript: urls
+    if (url.trim().toLowerCase().startsWith('javascript:')) {
+      return match;
+    }
+    return `<a href="${url}" class="link" target="_blank">${text}</a>`;
+  });
 
   // Headers: # to ######
   html = html.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, content) => {

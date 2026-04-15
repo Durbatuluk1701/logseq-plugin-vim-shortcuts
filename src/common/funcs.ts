@@ -16,10 +16,16 @@ import { useSearchStore } from "@/stores/search";
 export const clearBlocksHighlight = async (blocks: BlockEntity[]) => {
   for (const block of blocks) {
     const el = top!.document.getElementById(`block-content-${block.uuid}`);
-    if (el?.innerHTML) {
-      // Use global regex to replace ALL highlight marks in this block
-      const regex = /<mark class="vim-shortcuts-highlight">(.*?)<\/mark>/g;
-      el.innerHTML = el.innerHTML.replace(regex, "$1");
+    if (el) {
+      // Find all highlight marks in this block
+      const marks = el.querySelectorAll('mark.vim-shortcuts-highlight');
+      marks.forEach(mark => {
+        // Replace the mark element with its text content
+        const textNode = top!.document.createTextNode(mark.textContent || '');
+        mark.parentNode?.replaceChild(textNode, mark);
+      });
+      // Normalize to merge adjacent text nodes
+      el.normalize();
     }
 
     if (block.children && block.children.length > 0) {

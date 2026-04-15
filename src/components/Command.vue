@@ -362,7 +362,7 @@ const handleHelpClick = () => {
         <span v-if="isCommand">:</span
         ><span class="font-bold">{{ item.value }}</span>
         <span v-if="isCommand"> - </span>
-        <span class="text-gray-400" v-html="item.desc"></span>
+        <span class="text-gray-400">{{ item.desc }}</span>
       </div>
     </template>
   </el-autocomplete>
