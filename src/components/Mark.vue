@@ -2,7 +2,10 @@
 import { ref } from "vue";
 import { useMarkStore } from "@/stores/mark";
 import { hideMainUI, setMark, updateBlockMarkNote, updatePageMarkNote, escapeHtml } from "@/common/funcs";
-import DOMPurify from 'dompurify';
+import dompurify from 'dompurify';
+
+// In browser environments (like a Vite/Vue app), dompurify defaults to using the global window.
+const DOMPurify = typeof window !== 'undefined' ? dompurify(window) : dompurify();
 
 const mark = useMarkStore();
 const blockContentCache = ref<Record<string, string>>({});
