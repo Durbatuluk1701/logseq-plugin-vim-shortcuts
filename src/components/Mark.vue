@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useMarkStore } from "@/stores/mark";
 import { hideMainUI, setMark, updateBlockMarkNote, updatePageMarkNote, escapeHtml } from "@/common/funcs";
+import DOMPurify from 'dompurify';
 
 const mark = useMarkStore();
 const blockContentCache = ref<Record<string, string>>({});
@@ -220,8 +221,8 @@ const getBlockPreview = async (blockUUID: string): Promise<string> => {
       const rendered = renderMarkdown(truncated);
 
       // Cache the result
-      blockContentCache.value[blockUUID] = rendered;
-      return rendered;
+      blockContentCache.value[blockUUID] = DOMPurify.sanitize(rendered);
+      return blockContentCache.value[blockUUID];
     }
     return "No content available";
   } catch (error) {
@@ -298,8 +299,8 @@ const getPagePreview = async (pageName: string): Promise<string> => {
     const rendered = renderedBlocks.join('');
 
     // Cache the result
-    pageContentCache.value[pageName] = rendered;
-    return rendered;
+    pageContentCache.value[pageName] = DOMPurify.sanitize(rendered);
+    return pageContentCache.value[pageName];
   } catch (error) {
     console.error("Failed to load page content:", error);
     return "Failed to load content";

@@ -28,9 +28,11 @@
   "dependencies": {
     "@joeattardi/emoji-button": "^4.6.4",
     "@logseq/libs": "^0.0.17",
+    "@types/dompurify": "^3.2.0",
     "change-case-all": "^2.1.0",
     "clipboardy": "^5.0.2",
     "date-fns": "^4.1.0",
+    "dompurify": "^3.4.0",
     "element-plus": "^2.13.0",
     "hotkeys-js": "^4.0.0",
     "lorem-ipsum": "^2.0.8",
