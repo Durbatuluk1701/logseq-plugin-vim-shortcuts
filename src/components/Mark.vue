@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useMarkStore } from "@/stores/mark";
-import { hideMainUI, setMark, updateBlockMarkNote, updatePageMarkNote } from "@/common/funcs";
+import { hideMainUI, setMark, updateBlockMarkNote, updatePageMarkNote, escapeHtml } from "@/common/funcs";
 
 const mark = useMarkStore();
 const blockContentCache = ref<Record<string, string>>({});
@@ -136,11 +136,7 @@ const renderMarkdown = (text: string): string => {
   html = html.replace(/\n\s*\n\s*\n/g, '\n\n');
 
   // Escape HTML to prevent XSS
-  html = html.replace(/&/g, '&amp;')
-             .replace(/</g, '&lt;')
-             .replace(/>/g, '&gt;')
-             .replace(/"/g, '&quot;')
-             .replace(/'/g, '&#39;');
+  html = escapeHtml(html);
 
   // Bold: **text** or __text__
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
