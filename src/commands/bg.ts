@@ -1,6 +1,5 @@
 import "@logseq/libs";
 import { useColorStore } from "@/stores/color";
-import { ParsedArgs } from "minimist";
 import { filterDarkColor } from "@/common/funcs";
 
 export const picker = () => {
@@ -62,7 +61,7 @@ export const clear = async () => {
   }
 };
 
-export const set = async (argv: ParsedArgs) => {
+export const set = async (argv: Record<string, any>) => {
   const colorStore = useColorStore();
   const color = argv._[0];
 

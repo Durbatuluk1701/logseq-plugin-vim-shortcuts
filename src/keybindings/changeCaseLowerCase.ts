@@ -1,10 +1,10 @@
 import { ILSPluginUser } from "@logseq/libs/dist/LSPlugin";
-import * as cc from "change-case-all";
 import {
   debug,
   getSettings,
   beforeActionExecute,
   beforeActionRegister,
+  lowerCase,
 } from "@/common/funcs";
 import { useSearchStore } from "@/stores/search";
 
@@ -55,7 +55,7 @@ export default (logseq: ILSPluginUser) => {
           const selected = content.substring(start, end + 1);
           const after = content.substring(end + 1);
 
-          newContent = before + cc.lowerCase(selected) + after;
+          newContent = before + lowerCase(selected) + after;
 
           // Exit visual mode after operation
           await searchStore.toggleVisualMode();
@@ -74,7 +74,7 @@ export default (logseq: ILSPluginUser) => {
           }
         } else {
           // Change case of entire block
-          newContent = cc.lowerCase(content);
+          newContent = lowerCase(content);
         }
 
         if (newContent !== content) {

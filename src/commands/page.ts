@@ -1,7 +1,6 @@
 import { clearCurrentPageBlocksHighlight, hideMainUI } from "@/common/funcs";
 import "@logseq/libs";
 import { useCopyTextStore } from "@/stores/copy-text";
-import { format } from "date-fns";
 
 const replaceBlock = async (block, regex, replace) => {
   const replaced = block.content.replace(regex, replace);

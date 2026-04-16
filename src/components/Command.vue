@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import "@logseq/libs";
-import minimist from "minimist";
 import { ref } from "vue";
 
 import * as commands from "@/commands";
@@ -10,7 +9,7 @@ import { useSettingsStore } from "@/stores/settings";
 import { useHelpStore } from "@/stores/help";
 
 import emojiData from "../commands/emoji/emoji";
-import { hideMainUI, pushCommandHistory } from "@/common/funcs";
+import { hideMainUI, pushCommandHistory, parseArgs } from "@/common/funcs";
 
 const commandStore = useCommandStore();
 const colorStore = useColorStore();
@@ -51,7 +50,7 @@ const handleEnter = async () => {
 
   const split: string[] = value.split(" ");
   const args = split.slice(1).join(" ");
-  const argv = minimist(args.split(" "));
+  const argv = parseArgs(args);
   const cmd = split[0];
 
   let delayFocus = true;
@@ -107,10 +106,6 @@ const handleEnter = async () => {
     case "wq":
       commands.page.writeAndQuit();
       break;
-    case "lorem":
-      await commands.lorem.generate(argv);
-      hideMainUI();
-      break;
     case "sort":
       hideMainUI();
       await commands.sort.sort();
@@ -118,10 +113,6 @@ const handleEnter = async () => {
     case "rsort":
       hideMainUI();
       await commands.sort.rsort();
-      break;
-    case "emoji-picker":
-    case "emoji":
-      await commands.emoji.generate(argv);
       break;
 
     case "bg-picker":

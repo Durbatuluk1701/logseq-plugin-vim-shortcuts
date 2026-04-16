@@ -89,12 +89,8 @@ export const keyBindingsMeta: KeyBindingMeta[] = [
   { key: 'searchNext', label: 'Next Search Result', description: 'Jump to next search result', category: 'search', defaultBinding: 'n' },
   { key: 'searchPrev', label: 'Previous Search Result', description: 'Jump to previous search result', category: 'search', defaultBinding: 'shift+n' },
   { key: 'searchCleanup', label: 'Clear Search Highlights', description: 'Clear search result highlights', category: 'search', defaultBinding: 's q' },
-  { key: 'searchBaidu', label: 'Search Baidu', description: 'Search selected text on Baidu', category: 'search', defaultBinding: 's b' },
-  { key: 'searchGithub', label: 'Search GitHub', description: 'Search selected text on GitHub', category: 'search', defaultBinding: 's h' },
-  { key: 'searchGoogle', label: 'Search Google', description: 'Search selected text on Google', category: 'search', defaultBinding: 's g' },
-  { key: 'searchStackoverflow', label: 'Search StackOverflow', description: 'Search selected text on StackOverflow', category: 'search', defaultBinding: 's s' },
-  { key: 'searchWikipedia', label: 'Search Wikipedia', description: 'Search selected text on Wikipedia', category: 'search', defaultBinding: 's e' },
-  { key: 'searchYoutube', label: 'Search YouTube', description: 'Search selected text on YouTube', category: 'search', defaultBinding: 's y' },
+  { key: 'searchGithub', label: 'Search GitHub', description: 'Search selected text on GitHub', category: 'search', defaultBinding: 's g' },
+  { key: 'searchDuckDuckGo', label: 'Search DuckDuckGo', description: 'Search selected text on DuckDuckGo', category: 'search', defaultBinding: 's d' },
 
   // Mark
   { key: 'markSave', label: 'Save Mark', description: 'Save current position as mark', category: 'mark', defaultBinding: 'm' },

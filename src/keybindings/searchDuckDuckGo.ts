@@ -10,21 +10,21 @@ import { useSearchStore } from "@/stores/search";
 
 export default (logseq: ILSPluginUser) => {
   // Check if this keybinding is disabled
-  if (!beforeActionRegister("searchWikipedia")) {
+  if (!beforeActionRegister("searchDuckDuckGo")) {
     return;
   }
 
   const settings = getSettings();
 
-  const bindings = Array.isArray(settings.keyBindings.searchWikipedia)
-    ? settings.keyBindings.searchWikipedia
-    : [settings.keyBindings.searchWikipedia];
+  const bindings = Array.isArray(settings.keyBindings.searchDuckDuckGo)
+    ? settings.keyBindings.searchDuckDuckGo
+    : [settings.keyBindings.searchDuckDuckGo];
 
   bindings.forEach((binding, index) => {
     logseq.App.registerCommandPalette(
       {
-        key: "vim-shortcut-search-wikipedia-" + index,
-        label: "Search in Wikipedia",
+        key: "vim-shortcut-search-duckduckgo-" + index,
+        label: "Search in DuckDuckGo",
         keybinding: {
           mode: "non-editing",
           binding,
@@ -36,7 +36,7 @@ export default (logseq: ILSPluginUser) => {
           return;
         }
 
-        debug("Search in Wikipedia");
+        debug("Search in DuckDuckGo");
 
         const searchStore = useSearchStore();
         let searchText = "";
@@ -63,7 +63,7 @@ export default (logseq: ILSPluginUser) => {
 
         if (searchText) {
           await logseq.App.openExternalLink(
-            `https://en.wikipedia.org/wiki/${encodeURIComponent(searchText)}`
+            `https://duckduckgo.com/?q=${encodeURIComponent(searchText)}`
           );
         }
       }

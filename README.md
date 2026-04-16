@@ -242,7 +242,6 @@ All shortcuts can be customized via the [Settings UI](#settings-ui). Below are t
 | `v`                         | Toggle Visual Mode | Enter/exit Visual block selection mode |
 | `Shift+V`                   | Visual Line Mode   | Enter/exit Visual line selection mode  |
 | `Mod+Shift+;` / `Mod+Alt+;` | Command Mode       | Open command palette                   |
-| `Mod+/`                     | Emoji Picker       | Open emoji picker UI                   |
 
 > **Note**: `Mod` = `Cmd` on macOS, `Ctrl` on Windows/Linux
 
@@ -370,18 +369,6 @@ Execute powerful Vim-style commands for advanced operations. Press `Mod+Shift+;`
 | `:rename <newname>` | Alias for `:re`             | `:rename ProjectNotes`                      |
 | `:copy-path`        | Copy page/journal file path | For external editing                        |
 | `:open-in-vscode`   | Open current page in VSCode | Requires VSCode installed                   |
-
-#### Content Generation
-
-| Command                    | Description                        | Examples                                          |
-| -------------------------- | ---------------------------------- | ------------------------------------------------- |
-| `:lorem`                   | Generate random lorem ipsum blocks | `:lorem` - Default paragraphs                     |
-| `:lorem-ipsum`             | Alias for `:lorem`                 |                                                   |
-| `:lorem -u w`              | Generate random words              | Unit: `w`/`word`, `s`/`sentence`, `p`/`paragraph` |
-| `:lorem --unit sentence`   | Long form unit specification       | `:lorem --unit paragraph`                         |
-| `:emoji <keyword>`         | Insert emoji by keyword search     | `:emoji smile`                                    |
-| `:emoji <keyword> <count>` | Insert multiple emojis             | `:emoji heart 5` - Insert 5 hearts                |
-| `:emoji-picker`            | Open emoji picker UI               | Visual emoji selection                            |
 
 #### Block Styling
 

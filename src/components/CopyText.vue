@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { useCopyTextStore } from "@/stores/copy-text";
-import clipboardy from "clipboardy";
 import "@logseq/libs";
 
 const copyTextStore = useCopyTextStore();
 
-const handleClick = () => {
-  clipboardy.write(copyTextStore.content);
-  logseq.UI.showMsg("Copied to clipboard");
+const handleClick = async () => {
+  try {
+    await navigator.clipboard.writeText(copyTextStore.content);
+    logseq.UI.showMsg("Copied to clipboard");
+  } catch (err) {
+    logseq.UI.showMsg("Failed to copy to clipboard");
+  }
 };
 </script>
 

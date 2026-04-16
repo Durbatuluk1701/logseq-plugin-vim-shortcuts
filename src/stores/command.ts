@@ -36,13 +36,6 @@ export const commandList = [
   { value: "rename", desc: "Rename current page.", wait: true },
   { value: "undo", desc: "Undo last edit.", wait: false },
   { value: "redo", desc: "Redo last edit.", wait: false },
-  { value: "lorem", desc: "Random generate blocks.", wait: true },
-  {
-    value: "emoji-picker",
-    desc: "Search and input emojis using emoji picker.",
-    wait: false,
-  },
-  { value: "emoji", desc: "Search and input emojis.", wait: true },
   { value: "sort", desc: "Sort blocks a-z.", wait: false },
   { value: "rsort", desc: "Sort blocks z-a.", wait: false },
   {

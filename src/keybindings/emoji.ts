@@ -28,15 +28,15 @@ export default (logseq: ILSPluginUser) => {
 
     debug("Insert emoji");
 
-    showMainUI(false);
-
     const isEditing = await logseq.Editor.checkEditing();
     if (!isEditing) {
       logseq.UI.showMsg("Please edit a block first.");
       return;
     }
-    const emojiStore = useEmojiStore();
-    emojiStore.showPicker();
+
+    // Show command mode with emoji command hint
+    showMainUI(false);
+    logseq.UI.showMsg("Use :emoji <keyword> to insert emoji (e.g., :emoji smile)");
   };
 
   bindings.forEach((binding, index) => {
