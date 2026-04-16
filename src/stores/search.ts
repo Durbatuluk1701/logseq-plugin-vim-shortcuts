@@ -1,4 +1,4 @@
-import { clearCurrentPageBlocksHighlight, hideMainUI } from "@/common/funcs";
+import { clearCurrentPageBlocksHighlight, hideMainUI, escapeHtml } from "@/common/funcs";
 import { BlockEntity, BlockUUID } from "@logseq/libs/dist/LSPlugin";
 import { defineStore } from "pinia";
 
@@ -148,18 +148,21 @@ function processBlockSegments(tab, input, highlightOffset?: number) {
   return tab;
 }
 
+
 function addHighlight(word: string, input: string, highlightOffset?: number) {
   // If highlightOffset is specified, only highlight that specific match
   if (highlightOffset !== undefined) {
     const startPos = highlightOffset;
     if (startPos > -1 && startPos < word.length) {
       word =
-        word.substring(0, startPos) +
-        `<mark class="vim-shortcuts-highlight">${word.substring(
+        escapeHtml(word.substring(0, startPos)) +
+        `<mark class="vim-shortcuts-highlight">${escapeHtml(word.substring(
           startPos,
           startPos + input.length
-        )}</mark>` +
-        word.substring(startPos + input.length);
+        ))}</mark>` +
+        escapeHtml(word.substring(startPos + input.length));
+    } else {
+      word = escapeHtml(word);
     }
     return word;
   }
@@ -170,12 +173,14 @@ function addHighlight(word: string, input: string, highlightOffset?: number) {
     : word.toLowerCase().indexOf(input);
   if (startPos > -1) {
     word =
-      word.substring(0, startPos) +
-      `<mark class="vim-shortcuts-highlight">${word.substring(
+      escapeHtml(word.substring(0, startPos)) +
+      `<mark class="vim-shortcuts-highlight">${escapeHtml(word.substring(
         startPos,
         startPos + input.length
-      )}</mark>` +
-      word.substring(startPos + input.length);
+      ))}</mark>` +
+      escapeHtml(word.substring(startPos + input.length));
+  } else {
+    word = escapeHtml(word);
   }
   return word;
 }

@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useMarkStore } from "@/stores/mark";
-import { hideMainUI, setMark, updateBlockMarkNote, updatePageMarkNote } from "@/common/funcs";
+import { hideMainUI, setMark, updateBlockMarkNote, updatePageMarkNote, escapeHtml } from "@/common/funcs";
+import dompurify from 'dompurify';
+
+// In browser environments (like a Vite/Vue app), dompurify defaults to using the global window.
+const DOMPurify = typeof window !== 'undefined' ? dompurify(window) : dompurify();
 
 const mark = useMarkStore();
 const blockContentCache = ref<Record<string, string>>({});
@@ -136,9 +140,7 @@ const renderMarkdown = (text: string): string => {
   html = html.replace(/\n\s*\n\s*\n/g, '\n\n');
 
   // Escape HTML to prevent XSS
-  html = html.replace(/&/g, '&amp;')
-             .replace(/</g, '&lt;')
-             .replace(/>/g, '&gt;');
+  html = escapeHtml(html);
 
   // Bold: **text** or __text__
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
@@ -158,10 +160,22 @@ const renderMarkdown = (text: string): string => {
   html = html.replace(/==(.+?)==/g, '<mark class="highlight">$1</mark>');
 
   // Images: ![alt](url) - must be processed before links
-  html = html.replace(/!\[([^\]]*)\]\((.+?)\)/g, '<img src="$2" alt="$1" class="preview-image" />');
+  html = html.replace(/!\[([^\]]*)\]\((.+?)\)/g, (match, alt, url) => {
+    // Basic protection against javascript: urls
+    if (url.trim().toLowerCase().startsWith('javascript:')) {
+      return match;
+    }
+    return `<img src="${url}" alt="${alt}" class="preview-image" />`;
+  });
 
   // Links: [text](url)
-  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="link" target="_blank">$1</a>');
+  html = html.replace(/\[(.+?)\]\((.+?)\)/g, (match, text, url) => {
+    // Basic protection against javascript: urls
+    if (url.trim().toLowerCase().startsWith('javascript:')) {
+      return match;
+    }
+    return `<a href="${url}" class="link" target="_blank">${text}</a>`;
+  });
 
   // Headers: # to ######
   html = html.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, content) => {
@@ -210,8 +224,8 @@ const getBlockPreview = async (blockUUID: string): Promise<string> => {
       const rendered = renderMarkdown(truncated);
 
       // Cache the result
-      blockContentCache.value[blockUUID] = rendered;
-      return rendered;
+      blockContentCache.value[blockUUID] = DOMPurify.sanitize(rendered);
+      return blockContentCache.value[blockUUID];
     }
     return "No content available";
   } catch (error) {
@@ -288,8 +302,8 @@ const getPagePreview = async (pageName: string): Promise<string> => {
     const rendered = renderedBlocks.join('');
 
     // Cache the result
-    pageContentCache.value[pageName] = rendered;
-    return rendered;
+    pageContentCache.value[pageName] = DOMPurify.sanitize(rendered);
+    return pageContentCache.value[pageName];
   } catch (error) {
     console.error("Failed to load page content:", error);
     return "Failed to load content";

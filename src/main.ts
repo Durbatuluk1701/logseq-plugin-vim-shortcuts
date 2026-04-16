@@ -55,12 +55,8 @@ import prevSibling from "./keybindings/prevSibling";
 import redo from "./keybindings/redo";
 import replace from "./keybindings/replace";
 import search from "./keybindings/search";
-import searchBaidu from "./keybindings/searchBaidu";
 import searchGithub from "./keybindings/searchGithub";
-import searchGoogle from "./keybindings/searchGoogle";
-import searchStackoverflow from "./keybindings/searchStackoverflow";
-import searchWikipedia from "./keybindings/searchWikipedia";
-import searchYoutube from "./keybindings/searchYoutube";
+import searchDuckDuckGo from "./keybindings/searchDuckDuckGo";
 import toggleVisualMode from "./keybindings/toggleVisualMode";
 import visualLineMode from "./keybindings/visualLineMode";
 import top from "./keybindings/top";
@@ -69,12 +65,10 @@ import up from "./keybindings/up";
 import { createPinia } from "pinia";
 
 import { commandList, useCommandStore } from "./stores/command";
-import { useEmojiStore } from "@/stores/emoji";
 import { useColorStore } from "./stores/color";
 import { useSearchStore } from "./stores/search";
 import { useMarkStore } from "./stores/mark";
 
-import emoji from "./keybindings/emoji";
 import sort from "./keybindings/sort";
 import collapseAll from "./keybindings/collapseAll";
 import extendAll from "./keybindings/extendAll";
@@ -89,15 +83,7 @@ import deleteCurrentAndPrevSiblingBlocks from "./keybindings/deleteCurrentAndPre
 import openSettings from "./keybindings/openSettings";
 import { marks } from "./commands/mark";
 
-const defineSettings: SettingSchemaDesc[] = [
-  {
-    key: "showRecentEmojis",
-    title: "Show recent emojis by default",
-    description: "Show recent emojis by default. Needs window reload.",
-    default: false,
-    type: "boolean",
-  },
-];
+const defineSettings: SettingSchemaDesc[] = [];
 
 logseq.useSettingsSchema(defineSettings);
 
@@ -202,12 +188,8 @@ async function main() {
   highlightFocusIn(logseq);
   highlightFocusOut(logseq);
 
-  searchBaidu(logseq);
   searchGithub(logseq);
-  searchGoogle(logseq);
-  searchStackoverflow(logseq);
-  searchWikipedia(logseq);
-  searchYoutube(logseq);
+  searchDuckDuckGo(logseq);
 
   exitEditing(logseq);
   jumpInto(logseq);
@@ -247,10 +229,6 @@ async function main() {
 
   // setup ui hotkeys
   setHotkeys(logseq);
-
-  const emojiStore = useEmojiStore();
-  emojiStore.initPicker();
-  emoji(logseq);
 
   const colorStore = useColorStore();
 
@@ -413,7 +391,6 @@ async function main() {
     const isClickInCommand = target.closest(".command-input");
     const isClickInSearch = target.closest(".search-input");
     const isClickInColor = target.closest(".color-picker");
-    const isClickInEmoji = target.closest(".emoji-picker");
 
     // Element Plus components
     const isClickInPopper = target.closest(".el-popper");
@@ -437,7 +414,6 @@ async function main() {
       !isClickInCommand &&
       !isClickInSearch &&
       !isClickInColor &&
-      !isClickInEmoji &&
       !isClickInPopper &&
       !isClickInDialog &&
       !isClickInDialogWrapper &&

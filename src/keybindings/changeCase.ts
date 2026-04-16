@@ -1,5 +1,4 @@
 import { ILSPluginUser } from "@logseq/libs/dist/LSPlugin";
-import * as cc from "change-case-all";
 import {
   debug,
   getNumber,
@@ -7,6 +6,22 @@ import {
   resetNumber,
   beforeActionExecute,
   beforeActionRegister,
+  isUpperCase,
+  lowerCase,
+  upperCase,
+  titleCase,
+  sentenceCase,
+  pathCase,
+  capitalCase,
+  constantCase,
+  dotCase,
+  headerCase,
+  paramCase,
+  pascalCase,
+  camelCase,
+  snakeCase,
+  swapCase,
+  spongeCase,
 } from "@/common/funcs";
 import { useSearchStore } from "@/stores/search";
 
@@ -96,56 +111,56 @@ export default (logseq: ILSPluginUser) => {
 
         switch (number) {
           case 1:
-            if (cc.isUpperCase(textToChange)) {
-              transformedText = cc.lowerCase(textToChange);
+            if (isUpperCase(textToChange)) {
+              transformedText = lowerCase(textToChange);
             } else {
-              transformedText = cc.upperCase(textToChange);
+              transformedText = upperCase(textToChange);
             }
             break;
           case 2:
-            transformedText = cc.upperCase(textToChange);
+            transformedText = upperCase(textToChange);
             break;
           case 3:
-            transformedText = cc.lowerCase(textToChange);
+            transformedText = lowerCase(textToChange);
             break;
           case 4:
-            transformedText = cc.titleCase(textToChange);
+            transformedText = titleCase(textToChange);
             break;
           case 5:
-            transformedText = cc.sentenceCase(textToChange);
+            transformedText = sentenceCase(textToChange);
             break;
           case 6:
-            transformedText = cc.pathCase(textToChange);
+            transformedText = pathCase(textToChange);
             break;
           case 7:
-            transformedText = cc.capitalCase(textToChange);
+            transformedText = capitalCase(textToChange);
             break;
           case 8:
-            transformedText = cc.constantCase(textToChange);
+            transformedText = constantCase(textToChange);
             break;
           case 9:
-            transformedText = cc.dotCase(textToChange);
+            transformedText = dotCase(textToChange);
             break;
           case 10:
-            transformedText = cc.headerCase(textToChange);
+            transformedText = headerCase(textToChange);
             break;
           case 11:
-            transformedText = cc.paramCase(textToChange);
+            transformedText = paramCase(textToChange);
             break;
           case 12:
-            transformedText = cc.pascalCase(textToChange);
+            transformedText = pascalCase(textToChange);
             break;
           case 13:
-            transformedText = cc.camelCase(textToChange);
+            transformedText = camelCase(textToChange);
             break;
           case 14:
-            transformedText = cc.snakeCase(textToChange);
+            transformedText = snakeCase(textToChange);
             break;
           case 15:
-            transformedText = cc.swapCase(textToChange);
+            transformedText = swapCase(textToChange);
             break;
           case 16:
-            transformedText = cc.spongeCase(textToChange);
+            transformedText = spongeCase(textToChange);
             break;
           default:
             break;

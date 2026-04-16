@@ -8,7 +8,6 @@ import {
 } from "@logseq/libs/dist/LSPlugin";
 import { N, TempCache } from "./type";
 import { schemaVersion } from "../../package.json";
-import hotkeys from "hotkeys-js";
 import { useCommandStore } from "@/stores/command";
 import { useColorStore } from "@/stores/color";
 import { useSearchStore } from "@/stores/search";
@@ -16,10 +15,16 @@ import { useSearchStore } from "@/stores/search";
 export const clearBlocksHighlight = async (blocks: BlockEntity[]) => {
   for (const block of blocks) {
     const el = top!.document.getElementById(`block-content-${block.uuid}`);
-    if (el?.innerHTML) {
-      // Use global regex to replace ALL highlight marks in this block
-      const regex = /<mark class="vim-shortcuts-highlight">(.*?)<\/mark>/g;
-      el.innerHTML = el.innerHTML.replace(regex, "$1");
+    if (el) {
+      // Find all highlight marks in this block
+      const marks = el.querySelectorAll('mark.vim-shortcuts-highlight');
+      marks.forEach(mark => {
+        // Replace the mark element with its text content
+        const textNode = top!.document.createTextNode(mark.textContent || '');
+        mark.parentNode?.replaceChild(textNode, mark);
+      });
+      // Normalize to merge adjacent text nodes
+      el.normalize();
     }
 
     if (block.children && block.children.length > 0) {
@@ -62,17 +67,29 @@ export async function createPageIfNotExists(pageName): Promise<PageEntity> {
 }
 
 export async function setHotkeys(logseq: ILSPluginUser) {
-  hotkeys("esc", () => {
-    hideMainUI();
-    return false;
+  // Handle Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      hideMainUI();
+      e.preventDefault();
+    }
   });
 
-  hotkeys("command+shift+;, ctrl+shift+;, shift+;", () => {
-    const $input = document.querySelector(
-      ".command-input input"
-    ) as HTMLInputElement;
-    $input && $input.focus();
-    return false;
+  // Handle command/ctrl+shift+; to focus command input
+  document.addEventListener("keydown", (e) => {
+    const isMod = (e.ctrlKey || e.metaKey);
+    const isShift = e.shiftKey;
+    const isColon = e.key === ";" || e.code === "Semicolon";
+
+    if (isMod && isShift && isColon) {
+      const $input = document.querySelector(
+        ".command-input input"
+      ) as HTMLInputElement;
+      if ($input) {
+        $input.focus();
+        e.preventDefault();
+      }
+    }
   });
 }
 
@@ -527,13 +544,11 @@ export const defaultSettings = {
     cutWord: "shift+x",
     replace: "r",
     command: ["mod+alt+;", "mod+shift+;"],
-    emoji: "mod+/",
     openSettings: "",
   },
   disabledKeyBindings: [] as string[],
   settingsVersion,
   disabled: false,
-  showRecentEmojis: false,
 };
 
 export type DefaultSettingsType = typeof defaultSettings;
@@ -807,3 +822,160 @@ export const findDuplicateKeyBindings = (
 
   return duplicates;
 };
+
+export function escapeHtml(unsafe: string) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
+ * Simple argument parser - replaces minimist dependency
+ * Parses command-line style arguments like: "page-name --flag value --option"
+ * Returns: { _: [positional args], flag: true, option: 'value' }
+ */
+export function parseArgs(input: string): Record<string, any> {
+  const parts = input.trim().split(/\s+/);
+  const result: Record<string, any> = { _: [] };
+
+  let i = 0;
+  while (i < parts.length) {
+    const part = parts[i];
+
+    if (part.startsWith('--')) {
+      const key = part.slice(2);
+      const nextPart = parts[i + 1];
+
+      if (nextPart && !nextPart.startsWith('--')) {
+        result[key] = nextPart;
+        i += 2;
+      } else {
+        result[key] = true;
+        i += 1;
+      }
+    } else if (part.startsWith('-') && part.length === 2) {
+      // Short flag like -u, -p
+      const key = part.slice(1);
+      const nextPart = parts[i + 1];
+
+      if (nextPart && !nextPart.startsWith('-')) {
+        result[key] = nextPart;
+        i += 2;
+      } else {
+        result[key] = true;
+        i += 1;
+      }
+    } else {
+      result._.push(part);
+      i += 1;
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Format date using the preferred format - replaces date-fns dependency
+ * Supports common formats like "yyyy-MM-dd", "MM/dd/yyyy", etc.
+ */
+export function formatDate(date: Date, format: string): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+
+  // Replace format tokens
+  return format
+    .replace('yyyy', String(year))
+    .replace('MM', month)
+    .replace('dd', day)
+    .replace('yy', String(year).slice(-2));
+}
+
+/**
+ * Add/subtract days from a date
+ */
+export function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+/**
+ * Subtract days from a date
+ */
+export function subtractDays(date: Date, days: number): Date {
+  return addDays(date, -days);
+}
+
+/**
+ * Case conversion functions - replaces change-case-all dependency
+ */
+
+export function upperCase(str: string): string {
+  return str.toUpperCase();
+}
+
+export function lowerCase(str: string): string {
+  return str.toLowerCase();
+}
+
+export function isUpperCase(str: string): boolean {
+  return str === str.toUpperCase() && str !== str.toLowerCase();
+}
+
+export function titleCase(str: string): string {
+  return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
+}
+
+export function sentenceCase(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+export function pathCase(str: string): string {
+  return str.toLowerCase().replace(/\s+/g, '/').replace(/[_\-]+/g, '/');
+}
+
+export function capitalCase(str: string): string {
+  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word) => word.toUpperCase()).replace(/[_\-\s]/g, ' ');
+}
+
+export function constantCase(str: string): string {
+  return str.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase().replace(/\s+/g, '_').replace(/[-\s]/g, '_');
+}
+
+export function dotCase(str: string): string {
+  return str.toLowerCase().replace(/[\s_\-]/g, '.');
+}
+
+export function headerCase(str: string): string {
+  return str.split(/[\s_\-]+/).map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join('-');
+}
+
+export function paramCase(str: string): string {
+  return str.toLowerCase().replace(/[\s_]+/g, '-').replace(/[A-Z]+/g, (m) => '-' + m.toLowerCase()).replace(/^-/, '');
+}
+
+export function pascalCase(str: string): string {
+  return str.replace(/[\s_\-](.)?/g, (_, c) => c ? c.toUpperCase() : '').replace(/^(.)/, (m) => m.toUpperCase());
+}
+
+export function camelCase(str: string): string {
+  return str.replace(/[\s_\-](.)?/g, (_, c) => c ? c.toUpperCase() : '').replace(/^(.)/, (m) => m.toLowerCase());
+}
+
+export function snakeCase(str: string): string {
+  return str.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase().replace(/[\s\-]/g, '_');
+}
+
+export function swapCase(str: string): string {
+  return str.split('').map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join('');
+}
+
+export function spongeCase(str: string): string {
+  return str.split('').map((c, i) => i % 2 === 0 ? c.toLowerCase() : c.toUpperCase()).join('');
+}

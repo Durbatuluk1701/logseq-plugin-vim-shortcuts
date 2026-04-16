@@ -1,6 +1,5 @@
-import { hideMainUI } from "@/common/funcs";
+import { hideMainUI, formatDate, addDays, subtractDays } from "@/common/funcs";
 import "@logseq/libs";
-import { format, add, sub } from "date-fns";
 
 import { backward, forward } from "./invoke";
 
@@ -12,56 +11,44 @@ const parsePageName = async (pageName: string) => {
     case "@index":
       return "Contents";
     case "@today":
-      pageName = format(new Date(), config.preferredDateFormat);
+      pageName = formatDate(new Date(), config.preferredDateFormat);
       return pageName;
     case "@yesterday":
-      pageName = format(
-        sub(new Date(), {
-          days: 1,
-        }),
+      pageName = formatDate(
+        subtractDays(new Date(), 1),
         config.preferredDateFormat
       );
       return pageName;
     case "@tomorrow":
-      pageName = format(
-        add(new Date(), {
-          days: 1,
-        }),
+      pageName = formatDate(
+        addDays(new Date(), 1),
         config.preferredDateFormat
       );
       return pageName;
     case "@prev":
       if (page && page["journal?"]) {
-        pageName = format(
-          sub(new Date(page.name as string), {
-            days: 1,
-          }),
+        pageName = formatDate(
+          subtractDays(new Date(page.name as string), 1),
           config.preferredDateFormat
         );
         return pageName;
       } else {
-        pageName = format(
-          sub(new Date(), {
-            days: 1,
-          }),
+        pageName = formatDate(
+          subtractDays(new Date(), 1),
           config.preferredDateFormat
         );
         return pageName;
       }
     case "@next":
       if (page && page["journal?"]) {
-        pageName = format(
-          add(new Date(page.name as string), {
-            days: 1,
-          }),
+        pageName = formatDate(
+          addDays(new Date(page.name as string), 1),
           config.preferredDateFormat
         );
         return pageName;
       } else {
-        pageName = format(
-          add(new Date(), {
-            days: 1,
-          }),
+        pageName = formatDate(
+          addDays(new Date(), 1),
           config.preferredDateFormat
         );
         return pageName;

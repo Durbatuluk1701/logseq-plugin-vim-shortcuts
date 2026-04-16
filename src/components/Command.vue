@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import "@logseq/libs";
-import minimist from "minimist";
 import { ref } from "vue";
 
 import * as commands from "@/commands";
@@ -9,8 +8,7 @@ import { useColorStore } from "@/stores/color";
 import { useSettingsStore } from "@/stores/settings";
 import { useHelpStore } from "@/stores/help";
 
-import emojiData from "../commands/emoji/emoji";
-import { hideMainUI, pushCommandHistory } from "@/common/funcs";
+import { hideMainUI, pushCommandHistory, parseArgs } from "@/common/funcs";
 
 const commandStore = useCommandStore();
 const colorStore = useColorStore();
@@ -51,7 +49,7 @@ const handleEnter = async () => {
 
   const split: string[] = value.split(" ");
   const args = split.slice(1).join(" ");
-  const argv = minimist(args.split(" "));
+  const argv = parseArgs(args);
   const cmd = split[0];
 
   let delayFocus = true;
@@ -107,10 +105,6 @@ const handleEnter = async () => {
     case "wq":
       commands.page.writeAndQuit();
       break;
-    case "lorem":
-      await commands.lorem.generate(argv);
-      hideMainUI();
-      break;
     case "sort":
       hideMainUI();
       await commands.sort.sort();
@@ -118,10 +112,6 @@ const handleEnter = async () => {
     case "rsort":
       hideMainUI();
       await commands.sort.rsort();
-      break;
-    case "emoji-picker":
-    case "emoji":
-      await commands.emoji.generate(argv);
       break;
 
     case "bg-picker":
@@ -249,50 +239,6 @@ const querySearch = (queryString: string, cb: any) => {
             });
         }
         break;
-      case "emoji":
-        if (
-          !Number.isInteger(
-            parseInt(splitQueryString[splitQueryString.length - 1])
-          )
-        ) {
-          const subQueryString = splitQueryString
-            .slice(1)
-            .filter((item) => !Number.isInteger(item));
-
-          const emojiKeyword = subQueryString[subQueryString.length - 1];
-          if (emojiKeyword.length > 3) {
-            results = emojiData
-              .filter((emoji) => {
-                const keyword = Array.isArray(emoji.keyword)
-                  ? emoji.keyword
-                  : [emoji.keyword];
-                return (
-                  `:${keyword.join(":|:")}:`
-                    .toLowerCase()
-                    .indexOf(emojiKeyword.toLowerCase()) > -1
-                );
-              })
-              .map((emoji) => {
-                return {
-                  value: emoji.title,
-                  desc: emoji.description,
-                  wait: true,
-                };
-              });
-          }
-
-          if (
-            emojiKeyword[0] === ":" &&
-            emojiKeyword[emojiKeyword.length - 1] === ":" &&
-            results.length > 0
-          ) {
-            subQueryString[subQueryString.length - 1] = results[0].value;
-            $input.value = "emoji " + subQueryString.join(" ");
-            commandStore.setInput($input.value);
-          }
-        }
-
-        break;
     }
   } else {
     isCommand.value = true;
@@ -362,7 +308,7 @@ const handleHelpClick = () => {
         <span v-if="isCommand">:</span
         ><span class="font-bold">{{ item.value }}</span>
         <span v-if="isCommand"> - </span>
-        <span class="text-gray-400" v-html="item.desc"></span>
+        <span class="text-gray-400">{{ item.desc }}</span>
       </div>
     </template>
   </el-autocomplete>

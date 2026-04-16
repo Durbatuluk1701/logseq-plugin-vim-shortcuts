@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { useCopyTextStore } from "@/stores/copy-text";
-import clipboardy from "clipboardy";
 import "@logseq/libs";
 
 const copyTextStore = useCopyTextStore();
 
-const handleClick = () => {
-  clipboardy.write(copyTextStore.content);
-  logseq.UI.showMsg("Copied to clipboard");
+const handleClick = async () => {
+  try {
+    await navigator.clipboard.writeText(copyTextStore.content);
+    logseq.UI.showMsg("Copied to clipboard");
+  } catch (err) {
+    logseq.UI.showMsg("Failed to copy to clipboard");
+  }
 };
 </script>
 
@@ -21,7 +24,7 @@ const handleClick = () => {
     draggable
   >
     <div class="flex flex-row justify-between gap-4">
-      <div class="font-bold" v-html="copyTextStore.content"></div>
+      <div class="font-bold">{{ copyTextStore.content }}</div>
       <div @click="handleClick" class="cursor-pointer">
         <svg
           xmlns="http://www.w3.org/2000/svg"
