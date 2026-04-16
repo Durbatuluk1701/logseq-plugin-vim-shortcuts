@@ -69,7 +69,6 @@ import { useColorStore } from "./stores/color";
 import { useSearchStore } from "./stores/search";
 import { useMarkStore } from "./stores/mark";
 
-import emoji from "./keybindings/emoji";
 import sort from "./keybindings/sort";
 import collapseAll from "./keybindings/collapseAll";
 import extendAll from "./keybindings/extendAll";
@@ -84,15 +83,7 @@ import deleteCurrentAndPrevSiblingBlocks from "./keybindings/deleteCurrentAndPre
 import openSettings from "./keybindings/openSettings";
 import { marks } from "./commands/mark";
 
-const defineSettings: SettingSchemaDesc[] = [
-  {
-    key: "showRecentEmojis",
-    title: "Show recent emojis by default",
-    description: "Show recent emojis by default. Needs window reload.",
-    default: false,
-    type: "boolean",
-  },
-];
+const defineSettings: SettingSchemaDesc[] = [];
 
 logseq.useSettingsSchema(defineSettings);
 

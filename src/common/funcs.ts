@@ -544,13 +544,11 @@ export const defaultSettings = {
     cutWord: "shift+x",
     replace: "r",
     command: ["mod+alt+;", "mod+shift+;"],
-    emoji: "mod+/",
     openSettings: "",
   },
   disabledKeyBindings: [] as string[],
   settingsVersion,
   disabled: false,
-  showRecentEmojis: false,
 };
 
 export type DefaultSettingsType = typeof defaultSettings;

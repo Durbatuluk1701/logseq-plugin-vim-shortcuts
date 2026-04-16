@@ -481,7 +481,6 @@ The plugin adds Vim-related operations to Logseq's slash command menu:
 
 | Slash Command               | Description                                        |
 | --------------------------- | -------------------------------------------------- |
-| `/Insert Emoji`             | Insert emoji at cursor position                    |
 | `/Sort Blocks`              | Sort child blocks alphabetically (A-Z)             |
 | `/Reverse Sort Blocks`      | Sort child blocks reverse alphabetically (Z-A)     |
 | `/Random Bg Color`          | Apply random background color to current block     |

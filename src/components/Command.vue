@@ -8,7 +8,6 @@ import { useColorStore } from "@/stores/color";
 import { useSettingsStore } from "@/stores/settings";
 import { useHelpStore } from "@/stores/help";
 
-import emojiData from "../commands/emoji/emoji";
 import { hideMainUI, pushCommandHistory, parseArgs } from "@/common/funcs";
 
 const commandStore = useCommandStore();
@@ -239,50 +238,6 @@ const querySearch = (queryString: string, cb: any) => {
               };
             });
         }
-        break;
-      case "emoji":
-        if (
-          !Number.isInteger(
-            parseInt(splitQueryString[splitQueryString.length - 1])
-          )
-        ) {
-          const subQueryString = splitQueryString
-            .slice(1)
-            .filter((item) => !Number.isInteger(item));
-
-          const emojiKeyword = subQueryString[subQueryString.length - 1];
-          if (emojiKeyword.length > 3) {
-            results = emojiData
-              .filter((emoji) => {
-                const keyword = Array.isArray(emoji.keyword)
-                  ? emoji.keyword
-                  : [emoji.keyword];
-                return (
-                  `:${keyword.join(":|:")}:`
-                    .toLowerCase()
-                    .indexOf(emojiKeyword.toLowerCase()) > -1
-                );
-              })
-              .map((emoji) => {
-                return {
-                  value: emoji.title,
-                  desc: emoji.description,
-                  wait: true,
-                };
-              });
-          }
-
-          if (
-            emojiKeyword[0] === ":" &&
-            emojiKeyword[emojiKeyword.length - 1] === ":" &&
-            results.length > 0
-          ) {
-            subQueryString[subQueryString.length - 1] = results[0].value;
-            $input.value = "emoji " + subQueryString.join(" ");
-            commandStore.setInput($input.value);
-          }
-        }
-
         break;
     }
   } else {

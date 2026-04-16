@@ -106,7 +106,6 @@ export const keyBindingsMeta: KeyBindingMeta[] = [
 
   // Command
   { key: 'command', label: 'Command Palette', description: 'Open command palette', category: 'command', defaultBinding: ['mod+alt+;', 'mod+shift+;'] },
-  { key: 'emoji', label: 'Emoji Picker', description: 'Open emoji picker', category: 'command', defaultBinding: 'mod+/' },
   { key: 'openSettings', label: 'Open Settings', description: 'Open vim shortcuts settings dialog', category: 'command', defaultBinding: '' },
 ];
 
